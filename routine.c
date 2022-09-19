@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:04:52 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/16 05:20:37 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/19 20:33:56 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,22 @@
 
 int	get_forks(t_philo *philo)
 {
-	//	dprintf(2, "id of the philo that is trying to get a fork  %d\n", philo->id);
 	if (philo->id % 2 == 0)
-		pthread_mutex_lock(philo->l_fork);
+	{
+		if (pthread_mutex_lock(philo->l_fork))
+			return (0);
+		if (is_dead())	
+			return (0);
+		monitor(*philo, "has taken a fork");
+	}
 	else
-		pthread_mutex_lock(philo->r_fork);
-	monitor(*philo, "has taken a fork");
+	{
+		if (pthread_mutex_lock(philo->r_fork))
+			return (0);
+		if (is_dead())	
+			return (0);
+		monitor(*philo, "has taken a fork");
+	}
 	if (philo->id % 2 == 0)
 	{
 		if (pthread_mutex_lock(philo->r_fork))
@@ -46,7 +56,11 @@ int	is_dead(void)
 	t_data	*data;
 
 	data = _data();
-	//	return (0);
+
+	pthread_mutex_lock(data->n_eaten_mutex);
+	if (data->n_philo_has_eaten == data->n_philo)
+		return (1);
+	pthread_mutex_unlock(data->n_eaten_mutex);
 	pthread_mutex_lock(data->died_mutex);
 	if (data->died)
 	{
@@ -59,49 +73,59 @@ int	is_dead(void)
 
 int	waiting(int	time)
 {
-	int	i;
+	int	begin;
 
-	i = 0;
-	while (i < time)
+	begin = get_time() * 1000;
+	while (get_time() * 1000 - begin < time)
 	{
 		if (is_dead())
+		{
+			//			printf("bye bye les gars...\n");
 			return (0);
-		usleep(10);
-		i += 10;
+		}
+		usleep(100);
 	}
 	return (1);
 }
 
-void sleeping(t_philo *philo)
+int	sleeping(t_philo *philo)
 {
 	t_data	*data;
 
 	data = _data();
 	monitor(*philo, "is sleeping");
-	waiting(data->time_to_sleep * 1000);
+	if (!waiting(data->time_to_sleep * 1000))
+		return (0);
+	return (1);
 }
 
 int	eating(t_philo *philo)
 {
 	t_data	*data;
 
-	if (get_forks(philo))
+	data = _data();
+	pthread_mutex_lock(philo->blackhole_mutex);
+	philo->blackhole = (get_time() - data->begin) + data->time_to_die;
+	pthread_mutex_unlock(philo->blackhole_mutex);
+	monitor(*philo, "is eating");
+	if (!waiting(data->time_to_eat * 1000))
 	{
-		data = _data();
-		if (is_dead())	
-			return (0);
-		philo->last_meal = get_time();
-		monitor(*philo, "is eating");
-		waiting(data->time_to_eat * 1000);
 		pthread_mutex_unlock(philo->l_fork);
 		pthread_mutex_unlock(philo->r_fork);
-		philo->n_meals++;
-		if (is_dead())	
-			return 0 ;
-		sleeping(philo);
-		return (1);
+		return (0);
 	}
-	return (0);
+	pthread_mutex_unlock(philo->l_fork);
+	pthread_mutex_unlock(philo->r_fork);
+	philo->n_meals++;
+	pthread_mutex_lock(philo->has_eaten_mutex);
+	if (philo->n_meals == data->max_meal)
+		philo->has_eaten = 1;
+	pthread_mutex_unlock(philo->has_eaten_mutex);
+	if (is_dead())	
+		return (0) ;
+	if (!sleeping(philo))
+		return (0);
+	return (1);
 }
 
 void	*routine(void *param)
@@ -111,18 +135,26 @@ void	*routine(void *param)
 
 	data = _data();
 	philo = param;
-	philo->last_meal = get_time();
-	//	printf("philo %d born\n", philo->id);
-	while (1)
+	philo->blackhole = data->time_to_die;
+	while (!is_dead())
 	{
 		if (is_dead())	
 			break ;
-		if (philo->n_meals == data->max_meal)
-			break ;
 		monitor(*philo, "is thinking");
+		if (is_dead())	
+			break ;
+		while (!get_forks(philo) && !is_dead())
+			usleep(10);
+		if (is_dead())
+		{
+			pthread_mutex_unlock(philo->l_fork);
+			pthread_mutex_unlock(philo->r_fork);
+			break ;
+		}
 		if (!eating(philo))
-			break;
+			break ;
 	}
+	//	dprintf(2, "bye bye les gars...\n");
 	pthread_exit(NULL);
 	return (NULL);
 }

@@ -1,6 +1,6 @@
 CC			:=	cc
 CFLAGS		:=	-MMD -Wall -Werror -Wextra
-CFLAGSADD	:=	-g3 -pthread
+CFLAGSADD	:=	-g3 -pthread #-fsanitize=thread
 
 IPATH		:=	.
 
@@ -8,7 +8,6 @@ SRCS		:=	main.c\
 				fork.c\
 				utils.c\
 				routine.c\
-				deathchecker.c
 
 NAME		:=	philo
 

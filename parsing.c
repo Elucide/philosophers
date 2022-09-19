@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 20:38:19 by yschecro          #+#    #+#             */
-/*   Updated: 2022/07/27 20:49:01 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/19 19:37:00 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-int ft_atoi(char *str)
+int	ft_atoi(char *str)
 {
 	int	i;
 	int	out;
@@ -44,33 +44,26 @@ int ft_atoi(char *str)
 	return (out * signe);
 }
 
-int check_arg(char *str)
+int	check_arg(char *str)
 {
 	int	i;
 
 	i = 0;
 	while (str[i])
 	{
-		if (str[i]=!= '0' ||\
-				str[i] == '1' ||\
-				str[i] == '2' ||\
-				str[i] == '3' ||\
-				str[i] == '4' ||\
-				str[i] == '5' ||\
-				str[i] == '6' ||\
-				str[i] == '7' ||\
-				str[i] == '8' ||\
-				str[i] == '9' ||)
+		if (str[i] < '0' || str[i] > '9')
 			return (0);
-	
+		i++;
+	}
+	return (1);
+}
 
 int	parse_arg(int ac, char **av)
 {
 	if (ac != 5 || ac != 6)
 		return (0);
 	if (ft_strlen(av[1]) > 12 || \
-			ft_strlen(av[2]) > 12 ||\
+			ft_strlen(av[2]) > 12 || \
 			ft_strlen(av[3]) > 12 ||)
 		return (0);
 }
-
