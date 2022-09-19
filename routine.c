@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:04:52 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/19 21:01:17 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/19 21:22:24 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,7 @@ int	eating(t_philo *philo)
 		return (0) ;
 	if (!sleeping(philo))
 		return (0);
+	waiting(200);
 	return (1);
 }
 

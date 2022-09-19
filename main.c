@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/11 21:13:23 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/19 21:00:16 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/19 21:44:29 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,9 @@ int	arg_init(int ac, char **av)
 	data->time_to_die = atoi(av[2]);
 	data->time_to_eat = atoi(av[3]);
 	data->time_to_sleep = atoi(av[4]);
+	if (data->time_to_die >= 1000000 || data->time_to_sleep >= 1000000 || \
+			data->time_to_eat >= 1000000 || data->n_philo <= 0)
+		return (0);
 	if (ac == 5)
 		data->max_meal = -1;
 	else
