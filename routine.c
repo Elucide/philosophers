@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:04:52 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/19 20:33:56 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/19 21:01:17 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,10 @@ int	is_dead(void)
 
 	pthread_mutex_lock(data->n_eaten_mutex);
 	if (data->n_philo_has_eaten == data->n_philo)
+	{
+		pthread_mutex_unlock(data->n_eaten_mutex);
 		return (1);
+	}
 	pthread_mutex_unlock(data->n_eaten_mutex);
 	pthread_mutex_lock(data->died_mutex);
 	if (data->died)

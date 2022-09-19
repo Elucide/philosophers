@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/11 21:13:23 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/19 20:30:22 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/19 21:00:16 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,14 +181,19 @@ int	loop(void)
 		while (i < data->n_philo)
 		{
 			pthread_mutex_lock(data->philos[i].has_eaten_mutex);
-			if (data->philos[i].has_eaten)
+			pthread_mutex_lock(data->n_eaten_mutex);
+			if (data->philos[i].has_eaten == 1)
 			{
-				pthread_mutex_lock(data->n_eaten_mutex);
 				data->n_philo_has_eaten++;
-				dprintf(2, "n of philos thatseaten %d\n", data->n_philo_has_eaten);
-				pthread_mutex_unlock(data->n_eaten_mutex);
+				if (data->n_philo_has_eaten == data->n_philo)
+				{
+					pthread_mutex_unlock(data->n_eaten_mutex);
+					pthread_mutex_unlock(data->philos[i].has_eaten_mutex);
+					return (0);
+				}
 				data->philos[i].has_eaten = -1;
 			}
+			pthread_mutex_unlock(data->n_eaten_mutex);
 			pthread_mutex_unlock(data->philos[i].has_eaten_mutex);
 			pthread_mutex_lock(data->philos[i].blackhole_mutex);
 			if ((get_time() - data->begin) > data->philos[i].blackhole)
