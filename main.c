@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/11 21:13:23 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/21 17:05:31 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/21 17:19:55 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,7 @@ int	main(int ac, char **av)
 	if (!philosophers_init(ac, av))
 		return (0);
 	if (_data()->n_philo == 1)
-		return (monitor(_data()->philos[0], "is thinking"), \
-				monitor(_data()->philos[0], "died"), 0);
+		return (printf("0 1 is thinking\n0 1 died\n"), 0);
 	loop();
 	join_philo();
 	return (ft_exit());

@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/21 16:30:10 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/21 16:49:35 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/21 17:18:17 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ int	philosophers_init(int ac, char **av)
 	data = _data();
 	if (!arg_init(ac, av))
 		return (0);
+	if (data->n_philo == 1)
+		return (1);
 	data->output = malloc(sizeof(pthread_mutex_t));
 	data->died_mutex = malloc(sizeof(pthread_mutex_t));
 	data->n_eaten_mutex = malloc(sizeof(pthread_mutex_t));
