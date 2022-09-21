@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 18:22:44 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/16 04:06:58 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/21 17:12:40 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	init_fork(int i)
 		data->philos[i].l_fork = data->philos[i - 1].r_fork;
 		data->philos[i].r_fork = data->philos[0].l_fork;
 	}
-	else 
+	else
 	{
 		data->philos[i].l_fork = data->philos[i - 1].r_fork;
 		if (!pthread_mutex_init(data->philos[i].r_fork, 0))
@@ -54,7 +54,6 @@ int	mold_forks(void)
 			return (0);
 		i++;
 	}
-//	dprintf(1, "%d forks molded\n", i);
 	return (1);
 }
 
@@ -77,6 +76,5 @@ int	set_table(void)
 		i++;
 	}
 	data->philos[i].r_fork = data->philos[0].l_fork;
-//	dprintf(1, "forks attibuted\n");
 	return (1);
 }

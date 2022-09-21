@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:04:52 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/19 21:22:24 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/21 17:10:20 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	get_forks(t_philo *philo)
 	{
 		if (pthread_mutex_lock(philo->l_fork))
 			return (0);
-		if (is_dead())	
+		if (is_dead())
 			return (0);
 		monitor(*philo, "has taken a fork");
 	}
@@ -26,10 +26,12 @@ int	get_forks(t_philo *philo)
 	{
 		if (pthread_mutex_lock(philo->r_fork))
 			return (0);
-		if (is_dead())	
+		if (is_dead())
 			return (0);
 		monitor(*philo, "has taken a fork");
 	}
+	if (is_dead())
+		return (0);
 	if (philo->id % 2 == 0)
 	{
 		if (pthread_mutex_lock(philo->r_fork))
@@ -56,7 +58,6 @@ int	is_dead(void)
 	t_data	*data;
 
 	data = _data();
-
 	pthread_mutex_lock(data->n_eaten_mutex);
 	if (data->n_philo_has_eaten == data->n_philo)
 	{
@@ -74,7 +75,7 @@ int	is_dead(void)
 	return (0);
 }
 
-int	waiting(int	time)
+int	waiting(int time)
 {
 	int	begin;
 
@@ -82,10 +83,7 @@ int	waiting(int	time)
 	while (get_time() * 1000 - begin < time)
 	{
 		if (is_dead())
-		{
-			//			printf("bye bye les gars...\n");
 			return (0);
-		}
 		usleep(100);
 	}
 	return (1);
@@ -121,14 +119,13 @@ int	eating(t_philo *philo)
 	pthread_mutex_unlock(philo->r_fork);
 	philo->n_meals++;
 	pthread_mutex_lock(philo->has_eaten_mutex);
-	if (philo->n_meals == data->max_meal)
+	if (philo->n_meals == data->max_meal && philo->has_eaten == 0)
 		philo->has_eaten = 1;
 	pthread_mutex_unlock(philo->has_eaten_mutex);
-	if (is_dead())	
-		return (0) ;
-	if (!sleeping(philo))
+	if (is_dead())
 		return (0);
-	waiting(200);
+	if (!waiting(200))
+		return (0);
 	return (1);
 }
 
@@ -142,23 +139,20 @@ void	*routine(void *param)
 	philo->blackhole = data->time_to_die;
 	while (!is_dead())
 	{
-		if (is_dead())	
+		if (is_dead())
 			break ;
 		monitor(*philo, "is thinking");
-		if (is_dead())	
+		if (is_dead())
 			break ;
 		while (!get_forks(philo) && !is_dead())
 			usleep(10);
 		if (is_dead())
-		{
-			pthread_mutex_unlock(philo->l_fork);
-			pthread_mutex_unlock(philo->r_fork);
 			break ;
-		}
 		if (!eating(philo))
 			break ;
+		if (!sleeping(philo))
+			return (0);
 	}
-	//	dprintf(2, "bye bye les gars...\n");
 	pthread_exit(NULL);
 	return (NULL);
 }

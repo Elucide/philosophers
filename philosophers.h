@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/11 21:10:40 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/19 21:35:31 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/21 16:38:25 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,15 @@ int		init_fork(int i);
 int		init_philo(void);
 int		ft_exit(void);
 int		get_time(void);
+int		ft_atoi(char *str);
 int		mold_forks(void);
 int		is_dead(void);
 int		set_table(void);
 void	monitor(t_philo philo, char *status);
 int		deathchecker(void);
+int		arg_init(int ac, char **av);
+int		philosophers_init(int ac, char **av);
+int		philo_birth(t_philo *philo, int i);
+int		loop(void);
 
 #endif

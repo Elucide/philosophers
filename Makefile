@@ -8,6 +8,9 @@ SRCS		:=	main.c\
 				fork.c\
 				utils.c\
 				routine.c\
+				parsing.c\
+				init_philo.c\
+				loop.c
 
 NAME		:=	philo
 
