@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 20:38:19 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/22 16:28:24 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 19:02:57 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ int	arg_init(int ac, char **av)
 	if (data->time_to_die >= 1000000 || data->time_to_sleep >= 1000000 || \
 			data->time_to_eat >= 1000000 || data->n_philo <= 0 || \
 			data->max_meal <= 0 || data->time_to_die <= 60 || \
-			data->time_to_eat <= 60 || data->time_to_sleep <= 60)
+			data->time_to_eat <= 60 || data->time_to_sleep <= 60 || \
+			data->n_philo > 200)
 		return (printf("invalid arg\n"), 0);
 	if (ac == 5)
 		data->max_meal = -1;
