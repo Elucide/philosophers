@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/24 18:33:55 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/21 18:51:32 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 14:15:15 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,13 @@ void	monitor(t_philo philo, char *status)
 	if (is_dead())
 		return ;
 	pthread_mutex_lock(&data->output);
+	int test = is_dead();
+	if (test == 1)
+	{
+		pthread_mutex_unlock(&data->output);
+		return ;
+	}
+//	dprintf(2, ">>philo id %d : %d\n", philo.id, test);
 	printf("%d %d %s\n", get_time() - data->begin, philo.id, status);
 	pthread_mutex_unlock(&data->output);
 }
