@@ -1,6 +1,6 @@
 CC			:=	cc
 CFLAGS		:=	-MMD -Wall -Werror -Wextra
-CFLAGSADD	:=	-g3 -pthread #-fsanitize=thread
+CFLAGSADD	:=	-pthread -g3
 
 IPATH		:=	.
 

@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/21 16:37:45 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/22 15:50:55 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 17:16:23 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,5 +69,6 @@ int	loop(void)
 				return (pthread_mutex_lock(&data->output), 0);
 			i++;
 		}
+		usleep(400);
 	}
 }
