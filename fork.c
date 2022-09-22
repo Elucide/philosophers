@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 18:22:44 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/22 15:53:07 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 16:03:24 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ int	get_forks(t_philo *philo)
 	{
 		if (pthread_mutex_lock(philo->l_fork))
 			return (0);
+		monitor(philo, "has taken a fork");
 		if (pthread_mutex_lock(philo->r_fork))
 			return (0);
 		monitor(philo, "has taken a fork");
@@ -93,6 +94,7 @@ int	get_forks(t_philo *philo)
 	{
 		if (pthread_mutex_lock(philo->r_fork))
 			return (0);
+		monitor(philo, "has taken a fork");
 		if (pthread_mutex_lock(philo->l_fork))
 			return (0);
 		monitor(philo, "has taken a fork");
