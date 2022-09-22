@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/11 21:13:23 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/21 17:19:55 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/21 18:53:50 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,20 +41,16 @@ int	ft_exit(void)
 	while (i < data->n_philo)
 	{
 		free(data->philos[i].thread);
-		pthread_mutex_destroy(data->philos[i].blackhole_mutex);
-		pthread_mutex_destroy(data->philos[i].has_eaten_mutex);
-		free(data->philos[i].blackhole_mutex);
-		free(data->philos[i].has_eaten_mutex);
+		pthread_mutex_destroy(&data->philos[i].blackhole_mutex);
+		pthread_mutex_destroy(&data->philos[i].has_eaten_mutex);
 		i++;
 	}
 	pthread_mutex_destroy(data->forks);
+	pthread_mutex_destroy(&data->output);
 	free(data->forks);
 	free(data->philos);
-	free(data->output);
-	pthread_mutex_destroy(data->n_eaten_mutex);
-	pthread_mutex_destroy(data->died_mutex);
-	free(data->died_mutex);
-	free(data->n_eaten_mutex);
+	pthread_mutex_destroy(&data->n_eaten_mutex);
+	pthread_mutex_destroy(&data->died_mutex);
 	return (1);
 }
 
@@ -78,7 +74,8 @@ int	main(int ac, char **av)
 	if (!philosophers_init(ac, av))
 		return (0);
 	if (_data()->n_philo == 1)
-		return (printf("0 1 is thinking\n0 1 died\n"), 0);
+		return (printf("0 1 is thinking\n%d 1 died\n", _data()->time_to_die), \
+				0);
 	loop();
 	join_philo();
 	return (ft_exit());

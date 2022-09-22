@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/21 16:37:45 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/21 17:12:01 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 13:02:06 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,21 @@ int	check_food(t_philo *philo)
 	t_data	*data;
 
 	data = _data();
-	pthread_mutex_lock(philo->has_eaten_mutex);
-	pthread_mutex_lock(data->n_eaten_mutex);
+	pthread_mutex_lock(&philo->has_eaten_mutex);
+	pthread_mutex_lock(&data->n_eaten_mutex);
 	if (philo->has_eaten == 1)
 	{
 		data->n_philo_has_eaten++;
 		if (data->n_philo_has_eaten == data->n_philo)
 		{
-			pthread_mutex_unlock(data->n_eaten_mutex);
-			pthread_mutex_unlock(philo->has_eaten_mutex);
+			pthread_mutex_unlock(&data->n_eaten_mutex);
+			pthread_mutex_unlock(&philo->has_eaten_mutex);
 			return (0);
 		}
 		philo->has_eaten = -1;
 	}
-	pthread_mutex_unlock(data->n_eaten_mutex);
-	pthread_mutex_unlock(philo->has_eaten_mutex);
+	pthread_mutex_unlock(&data->n_eaten_mutex);
+	pthread_mutex_unlock(&philo->has_eaten_mutex);
 	return (1);
 }
 
@@ -40,17 +40,22 @@ int	check_death(t_philo *philo)
 	t_data	*data;
 
 	data = _data();
-	pthread_mutex_lock(philo->blackhole_mutex);
+	pthread_mutex_lock(&philo->blackhole_mutex);
 	if ((get_time() - data->begin) > philo->blackhole)
 	{
-		pthread_mutex_lock(data->died_mutex);
-		data->died = 1;
-		pthread_mutex_unlock(data->died_mutex);
-		pthread_mutex_unlock(philo->blackhole_mutex);
 		monitor(*philo, "died");
+		pthread_mutex_lock(&data->died_mutex);
+		data->died = 1;
+		pthread_mutex_unlock(&data->died_mutex);
+		pthread_mutex_unlock(&philo->blackhole_mutex);
+		if (data->n_philo % 2 == 1)
+		{
+//			pthread_mutex_unlock(philo->l_fork);
+//			pthread_mutex_unlock(philo->r_fork);
+		}
 		return (0);
 	}
-	pthread_mutex_unlock(philo->blackhole_mutex);
+	pthread_mutex_unlock(&philo->blackhole_mutex);
 	return (1);
 }
 

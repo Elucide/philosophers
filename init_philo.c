@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/21 16:30:10 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/21 17:18:17 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/21 18:10:16 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,11 @@ int	philosophers_init(int ac, char **av)
 		return (0);
 	if (data->n_philo == 1)
 		return (1);
-	data->output = malloc(sizeof(pthread_mutex_t));
-	data->died_mutex = malloc(sizeof(pthread_mutex_t));
-	data->n_eaten_mutex = malloc(sizeof(pthread_mutex_t));
-	if (pthread_mutex_init(data->output, 0))
+	if (pthread_mutex_init(&data->output, 0))
 		return (0);
-	if (pthread_mutex_init(data->died_mutex, 0))
+	if (pthread_mutex_init(&data->died_mutex, 0))
 		return (0);
-	if (pthread_mutex_init(data->n_eaten_mutex, 0))
-		return (0);
-	if (!data->output)
+	if (pthread_mutex_init(&data->n_eaten_mutex, 0))
 		return (0);
 	if (!mold_forks())
 		return (0);
@@ -73,16 +68,11 @@ int	philo_birth(t_philo *philo, int i)
 	if (!philo->thread)
 		return (0);
 	philo->n_meals = 0;
+	philo->has_eaten = 0;
 	philo->blackhole = _data()->time_to_die;
-	philo->blackhole_mutex = malloc(sizeof(pthread_mutex_t));
-	if (!philo->blackhole_mutex)
+	if (pthread_mutex_init(&philo->has_eaten_mutex, 0))
 		return (0);
-	philo->has_eaten_mutex = malloc(sizeof(pthread_mutex_t));
-	if (!philo->blackhole_mutex)
-		return (0);
-	if (pthread_mutex_init(philo->has_eaten_mutex, 0))
-		return (0);
-	if (pthread_mutex_init(philo->blackhole_mutex, 0))
+	if (pthread_mutex_init(&philo->blackhole_mutex, 0))
 		return (0);
 	philo->id = i + 1;
 	if (pthread_create(philo->thread, NULL, &routine, philo))

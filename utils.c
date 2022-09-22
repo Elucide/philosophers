@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/24 18:33:55 by yschecro          #+#    #+#             */
-/*   Updated: 2022/08/02 15:19:31 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/21 18:51:32 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ void	monitor(t_philo philo, char *status)
 	t_data	*data;
 
 	data = _data();
-	pthread_mutex_lock(data->output);
+	if (is_dead())
+		return ;
+	pthread_mutex_lock(&data->output);
 	printf("%d %d %s\n", get_time() - data->begin, philo.id, status);
-	pthread_mutex_unlock(data->output);
+	pthread_mutex_unlock(&data->output);
 }

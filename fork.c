@@ -19,9 +19,9 @@ int	init_fork(int i)
 	data = _data();
 	if (i == 0)
 	{
-		if (!pthread_mutex_init(data->philos[i].l_fork, 0))
+		if (!pthread_mutex_init(&data->philos[i].l_fork, 0))
 			return (0);
-		if (!pthread_mutex_init(data->philos[i].r_fork, 0))
+		if (!pthread_mutex_init(&data->philos[i].r_fork, 0))
 			return (0);
 	}
 	else if (i == data->n_philo - 1)
@@ -32,7 +32,7 @@ int	init_fork(int i)
 	else
 	{
 		data->philos[i].l_fork = data->philos[i - 1].r_fork;
-		if (!pthread_mutex_init(data->philos[i].r_fork, 0))
+		if (!pthread_mutex_init(&data->philos[i].r_fork, 0))
 			return (0);
 	}
 	return (1);
@@ -66,7 +66,7 @@ int	set_table(void)
 	data = _data();
 	while (i < data->n_philo)
 	{
-		data->philos[i].l_fork = &data->forks[i];
+		data->philos[i].l_fork = data->forks[i];
 		i++;
 	}
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:04:52 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/21 17:10:20 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 13:06:15 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,41 +16,46 @@ int	get_forks(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
 	{
-		if (pthread_mutex_lock(philo->l_fork))
+		if (pthread_mutex_lock(&philo->l_fork) || is_dead())
 			return (0);
-		if (is_dead())
+		if (pthread_mutex_lock(&philo->r_fork))
+		{
+			pthread_mutex_unlock(&philo->l_fork);
 			return (0);
+		}
 		monitor(*philo, "has taken a fork");
 	}
 	else
 	{
-		if (pthread_mutex_lock(philo->r_fork))
+		if (pthread_mutex_lock(&philo->r_fork) || is_dead())
 			return (0);
-		if (is_dead())
+		if (pthread_mutex_lock(&philo->l_fork))
+		{
+			pthread_mutex_unlock(&philo->r_fork);
 			return (0);
+		}
 		monitor(*philo, "has taken a fork");
 	}
 	if (is_dead())
 		return (0);
+	dprintf(2, "philo %d forks locked\n", philo->id);
+	return (1);
+}
+
+int	unlock_forks(t_philo *philo)
+{
 	if (philo->id % 2 == 0)
 	{
-		if (pthread_mutex_lock(philo->r_fork))
-		{
-			pthread_mutex_unlock(philo->l_fork);
-			return (0);
-		}
-		monitor(*philo, "has taken a fork");
+		pthread_mutex_unlock(&philo->r_fork);
+		pthread_mutex_unlock(&philo->l_fork);
 	}
 	else
 	{
-		if (pthread_mutex_lock(philo->l_fork))
-		{
-			pthread_mutex_unlock(philo->r_fork);
-			return (0);
-		}
-		monitor(*philo, "has taken a fork");
+		pthread_mutex_unlock(&philo->l_fork);
+		pthread_mutex_unlock(&philo->r_fork);
 	}
-	return (1);
+	dprintf(2, "philo %d forks unlocked\n", philo->id);
+	return (0);
 }
 
 int	is_dead(void)
@@ -58,20 +63,20 @@ int	is_dead(void)
 	t_data	*data;
 
 	data = _data();
-	pthread_mutex_lock(data->n_eaten_mutex);
+	pthread_mutex_lock(&data->n_eaten_mutex);
 	if (data->n_philo_has_eaten == data->n_philo)
 	{
-		pthread_mutex_unlock(data->n_eaten_mutex);
+		pthread_mutex_unlock(&data->n_eaten_mutex);
 		return (1);
 	}
-	pthread_mutex_unlock(data->n_eaten_mutex);
-	pthread_mutex_lock(data->died_mutex);
+	pthread_mutex_unlock(&data->n_eaten_mutex);
+	pthread_mutex_lock(&data->died_mutex);
 	if (data->died)
 	{
-		pthread_mutex_unlock(data->died_mutex);
+		pthread_mutex_unlock(&data->died_mutex);
 		return (1);
 	}
-	pthread_mutex_unlock(data->died_mutex);
+	pthread_mutex_unlock(&data->died_mutex);
 	return (0);
 }
 
@@ -105,23 +110,18 @@ int	eating(t_philo *philo)
 	t_data	*data;
 
 	data = _data();
-	pthread_mutex_lock(philo->blackhole_mutex);
+	pthread_mutex_lock(&philo->blackhole_mutex);
 	philo->blackhole = (get_time() - data->begin) + data->time_to_die;
-	pthread_mutex_unlock(philo->blackhole_mutex);
 	monitor(*philo, "is eating");
+	pthread_mutex_unlock(&philo->blackhole_mutex);
 	if (!waiting(data->time_to_eat * 1000))
-	{
-		pthread_mutex_unlock(philo->l_fork);
-		pthread_mutex_unlock(philo->r_fork);
-		return (0);
-	}
-	pthread_mutex_unlock(philo->l_fork);
-	pthread_mutex_unlock(philo->r_fork);
+		return (unlock_forks(philo), 0);
+	unlock_forks(philo);
 	philo->n_meals++;
-	pthread_mutex_lock(philo->has_eaten_mutex);
+	pthread_mutex_lock(&philo->has_eaten_mutex);
 	if (philo->n_meals == data->max_meal && philo->has_eaten == 0)
 		philo->has_eaten = 1;
-	pthread_mutex_unlock(philo->has_eaten_mutex);
+	pthread_mutex_unlock(&philo->has_eaten_mutex);
 	if (is_dead())
 		return (0);
 	if (!waiting(200))
@@ -147,11 +147,14 @@ void	*routine(void *param)
 		while (!get_forks(philo) && !is_dead())
 			usleep(10);
 		if (is_dead())
+		{
+			unlock_forks(philo);
 			break ;
+		}
 		if (!eating(philo))
 			break ;
 		if (!sleeping(philo))
-			return (0);
+			break ;
 	}
 	pthread_exit(NULL);
 	return (NULL);

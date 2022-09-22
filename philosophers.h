@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/11 21:10:40 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/21 16:38:25 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 13:08:31 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,26 +19,26 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-typedef struct	s_fork
+typedef struct s_fork
 {
 	int	is_used;
-} t_fork;
+}	t_fork;
 
-typedef struct s_philo 
+typedef struct s_philo
 {
 	int				id;
 	int				n_meals;
-	pthread_mutex_t	*blackhole_mutex;
+	pthread_mutex_t	blackhole_mutex;
 	int				blackhole;
-	pthread_mutex_t	*has_eaten_mutex;
+	pthread_mutex_t	has_eaten_mutex;
 	int				has_eaten;
 	pthread_t		*thread;
-	pthread_mutex_t	*l_fork;
-	pthread_mutex_t	*r_fork;
+	pthread_mutex_t	l_fork;
+	pthread_mutex_t	r_fork;
 
-} t_philo;
+}	t_philo;
 
-typedef struct s_data 
+typedef struct s_data
 {
 	int				begin;
 	int				n_philo;
@@ -47,15 +47,15 @@ typedef struct s_data
 	int				time_to_die;
 	int				max_meal;
 	int				n_philo_has_eaten;
-	pthread_mutex_t	*died_mutex;
-	pthread_mutex_t	*n_eaten_mutex;
+	pthread_mutex_t	died_mutex;
+	pthread_mutex_t	n_eaten_mutex;
 	int				died;
 	t_philo			*philos;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	*output;
-} t_data;
+	pthread_mutex_t	output;
+}	t_data;
 
-t_data *_data(void);
+t_data	*_data(void);
 void	*routine(void *arg);
 int		init_fork(int i);
 int		init_philo(void);
