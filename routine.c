@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/26 17:04:52 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/22 16:04:58 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 16:16:45 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,7 @@ int	thinking(t_philo *philo)
 	if (is_dead())
 		return (0);
 	monitor(philo, "is thinking");
-	if (data->time_to_sleep < data->time_to_eat && data->n_philo % 2)
-	{
-		waiting((data->time_to_eat - data->time_to_sleep) * 1000 + 1);
-	}
-	else
-		waiting(1);
+	waiting(data->time_to_wait);
 	if (is_dead())
 		return (0);
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/11 21:10:40 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/22 15:53:39 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 16:17:06 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_data
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				time_to_die;
+	int				time_to_wait;
 	int				max_meal;
 	int				n_philo_has_eaten;
 	pthread_mutex_t	has_eaten_mutex;
@@ -74,5 +75,6 @@ int		loop(void);
 int		unlock_forks(t_philo *philo);
 int		get_forks(t_philo *philo);
 int		waiting(int time);
+int		get_time_to_sleep(void);
 
 #endif

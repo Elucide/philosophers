@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/27 20:38:19 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/21 16:36:22 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 16:28:24 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,5 +81,6 @@ int	arg_init(int ac, char **av)
 		return (printf("invalid arg\n"), 0);
 	if (ac == 5)
 		data->max_meal = -1;
+	data->time_to_wait = get_time_to_sleep();
 	return (1);
 }

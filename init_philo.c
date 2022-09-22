@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/21 16:30:10 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/22 13:32:49 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 16:15:40 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,15 @@ int	philo_birth(t_philo *philo, int i)
 	if (pthread_create(philo->thread, NULL, &routine, philo))
 		return (0);
 	return (1);
+}
+
+int	get_time_to_sleep(void)
+{
+	t_data	*data;
+
+	data = _data();
+	if (data->time_to_sleep < data->time_to_eat && data->n_philo % 2)
+		return ((data->time_to_eat - data->time_to_sleep) * 1000 + 1);
+	else
+		return (1);
 }
