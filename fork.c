@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/25 18:22:44 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/21 17:12:40 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 15:53:07 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,42 @@ int	set_table(void)
 	}
 	data->philos[i].r_fork = data->philos[0].l_fork;
 	return (1);
+}
+
+int	get_forks(t_philo *philo)
+{
+	if (philo->id % 2 == 0)
+	{
+		if (pthread_mutex_lock(philo->l_fork))
+			return (0);
+		if (pthread_mutex_lock(philo->r_fork))
+			return (0);
+		monitor(philo, "has taken a fork");
+	}
+	else
+	{
+		if (pthread_mutex_lock(philo->r_fork))
+			return (0);
+		if (pthread_mutex_lock(philo->l_fork))
+			return (0);
+		monitor(philo, "has taken a fork");
+	}
+	if (is_dead())
+		return (0);
+	return (1);
+}
+
+int	unlock_forks(t_philo *philo)
+{
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_unlock(philo->r_fork);
+		pthread_mutex_unlock(philo->l_fork);
+	}
+	else
+	{
+		pthread_mutex_unlock(philo->l_fork);
+		pthread_mutex_unlock(philo->r_fork);
+	}
+	return (0);
 }

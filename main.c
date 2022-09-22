@@ -6,7 +6,7 @@
 /*   By: yschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/11 21:13:23 by yschecro          #+#    #+#             */
-/*   Updated: 2022/09/22 13:32:07 by yschecro         ###   ########.fr       */
+/*   Updated: 2022/09/22 15:11:09 by yschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ int	main(int ac, char **av)
 		return (printf("0 1 is thinking\n%d 1 died\n", _data()->time_to_die), \
 				0);
 	loop();
+	pthread_mutex_unlock(&_data()->output);
 	join_philo();
 	return (ft_exit());
 }

@@ -1,2 +1,0 @@
-valgrind ./philo 4 200 70 80
-valgrind ./philo 50 200 100 100
